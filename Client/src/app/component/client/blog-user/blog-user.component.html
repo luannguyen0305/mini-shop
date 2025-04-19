@@ -1,0 +1,25 @@
+<body>
+  <header></header>
+  <hr />
+
+  <main>
+    <div class="main-title">
+      <h1>Mini Store</h1>
+      <h2>Optional blog description</h2>
+    </div>
+
+    <div class="article-aside-flex">
+      <div class="article-column">
+        <article>
+          <div class="article-content">
+            <h2>{{ blog.title }}</h2>
+            <p class="article-date">{{ formatDate(blog.create) }}</p>
+            <p class="article-text" [innerHTML]="blog.content | safeHtml">
+              {{ blog.content }}
+            </p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+</body>

@@ -1,0 +1,295 @@
+<section class="min-vh-100 pb-4 pt-5" style="background-color: #eef0f7">
+  <div class="container">
+    <div class="row">
+      <div class="col-7">
+        <!-- @* address *@ -->
+        <div class="card box-shadow">
+          <h5 class="card-header fw-bold p-3">1. Địa chỉ giao hàng</h5>
+          <div class="card-body">
+            <select
+              class="form-select"
+              [(ngModel)]="selectedAddress"
+              (change)="onChangeAddress()"
+            >
+              <option value="0" disabled selected>Chọn địa chỉ</option>
+              @for (item of addressList; track item.id) {
+              <option [value]="item.id">
+                {{ item.street }} - {{ item.district }} - {{ item.city }}
+              </option>
+              }
+            </select>
+            <!-- alert -->
+            <div
+              *ngIf="selectedAddress !== 0"
+              class="alert alert-success address-detail mt-3"
+              role="alert"
+            >
+              <h4 class="alert-heading fw-bold">{{ order.address }}</h4>
+              <p class="mt-2">{{ order.phone }}</p>
+              <hr />
+              <p class="mb-0">{{ order.fullName }}</p>
+            </div>
+            <!--  input address field  -->
+            <div class="address-container mt-3">
+              <div class="mb-3">
+                <div class="row">
+                  <div class="col-6">
+                    <input
+                      placeholder="Tên người nhận hàng"
+                      class="form-control"
+                      [(ngModel)]="order.fullName"
+                    />
+                  </div>
+                  <div class="col-6">
+                    <input
+                      placeholder="Số điện thoại nhận hàng"
+                      class="form-control"
+                      [(ngModel)]="order.phone"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <input
+                    placeholder="Địa chỉ giao hàng"
+                    class="form-control"
+                    [(ngModel)]="order.address"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--  order desciption  -->
+        <div class="card mt-4 box-shadow">
+          <h5 class="card-header fw-bold p-3">2. Ghi chú</h5>
+          <div class="card-body">
+            <textarea
+              class="form-control"
+              style="min-height: 120px"
+              placeholder="Enter note..."
+              [(ngModel)]="order.description"
+            ></textarea>
+          </div>
+        </div>
+
+        <!--  shipping method  -->
+        <div class="card mt-4 box-shadow">
+          <h5 class="card-header fw-bold p-3 mb-3">3. Hình thức vận chuyển</h5>
+          @for (item of shippingMethodList; track item.id) {
+          <label class="mb-3 px-3">
+            <input
+              class="form-check-input"
+              value="{{ item }}"
+              name="shipping-method"
+              type="radio"
+              id="{{ item.id }}"
+              (change)="onShippingMethodChange(item)"
+              [checked]="item === shippingMethodList[0]"
+            />
+            <div class="form-check-label">
+              <strong>{{ item.name }}</strong> <br />
+              <small
+                ><small *ngIf="item.cost === 0">FREE</small>
+                <small *ngIf="item.cost !== 0">{{ item.cost }}</small> USD
+                {{ item.estimatedDeliveryTime }}</small
+              >
+            </div>
+          </label>
+          }
+        </div>
+
+        <!-- payment method -->
+        <div class="card mt-4 box-shadow">
+          <h5 class="card-header fw-bold p-3 mb-3">
+            4. Phương thức thanh toán
+          </h5>
+
+          <div class="form-check mb-3 px-3">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="offline"
+              value="0"
+              checked
+              name="payment-method"
+              (change)="onPaymentMethodChange($event)"
+            />
+            <label
+              class="form-check-label d-flex gap-2 align-items-center p-3"
+              for="offline"
+            >
+              <i class="fa-solid fa-truck-fast fa-lg"></i>
+              <strong>Thanh toán khi nhận hàng</strong>
+            </label>
+          </div>
+
+          <div class="form-check mb-3 px-3">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="online"
+              value="1"
+              name="payment-method"
+              (change)="onPaymentMethodChange($event)"
+            />
+            <label
+              class="form-check-label d-flex gap-2 align-items-center p-3"
+              for="online"
+            >
+              <i class="fa-brands fa-cc-stripe fa-lg"></i>
+              <strong>Thanh toán online với Stripe</strong>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- order sumary  -->
+      <div class="col-5">
+        <!-- order items  -->
+        <div class="card box-shadow">
+          <h5 class="card-header fw-bold p-3">5. Chi tiết</h5>
+          <div class="card-body">
+            <table class="table">
+              <tbody class="align-midle">
+                @for (item of cartService.cart()?.items; track $index) {
+                <tr>
+                  <th scope="row">
+                    <img
+                      src="{{ item.productImage }}"
+                      style="height: 80px; width: 80px; object-fit: cover"
+                    />
+                  </th>
+                  <td>
+                    <div class="d-flex flex-column">
+                      <a
+                        class="fw-bold text-primary"
+                        style="text-decoration: none"
+                      >
+                        {{ item.quantity }} x {{ item.productName }}
+                      </a>
+                      <div class="fs-sm text-muted">
+                        Kích thước: {{ item.sizeName }}, Màu sắc:
+                        {{ item.colorName }}
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-end">
+                    <span class="fw-bold">${{ item.price }}</span>
+                  </td>
+                </tr>
+                }
+                <tr style="font-size: 16px">
+                  <th scope="row" colspan="2">
+                    <span class="fw-bold">Giá sản phẩm</span>
+                  </th>
+                  <td class="text-end">
+                    <span class="fw-bold">${{ cartService.totals() }}</span>
+                  </td>
+                </tr>
+                <tr style="font-size: 16px">
+                  <th scope="row" colspan="2">
+                    <span class="fw-bold">Phí giao hàng</span>
+                  </th>
+                  <td class="text-end">
+                    <span class="fw-bold">${{ order.shippingFee }}</span>
+                  </td>
+                </tr>
+                <tr style="font-size: 16px">
+                  <th scope="row" colspan="2">
+                    <span class="fw-bold">Thành tiền</span>
+                  </th>
+                  <td class="text-end">
+                    <span class="fw-bold"
+                      >${{ cartService.totals() + order.shippingFee }}</span
+                    >
+                  </td>
+                </tr>
+
+                <tr *ngIf="currentDiscount != null" style="font-size: 16px">
+                  <th scope="row" colspan="2">
+                    <span
+                      *ngIf="
+                        currentDiscount.amountOff !== 0 &&
+                        currentDiscount.amountOff != null
+                      "
+                      class="fw-bold"
+                      >Khuyến mãi (giá)</span
+                    >
+                    <span
+                      *ngIf="
+                        currentDiscount.percentOff !== 0 &&
+                        currentDiscount.percentOff != null
+                      "
+                      class="fw-bold"
+                      >Khuyến mãi ({{ currentDiscount.percentOff }}%)</span
+                    >
+                  </th>
+                  <td class="text-end">
+                    <span *ngIf="calDiscountPrice()" class="fw-bold"
+                      >-${{ calDiscountPrice() }}</span
+                    >
+                  </td>
+                </tr>
+
+                <tr *ngIf="currentDiscount != null" style="font-size: 16px">
+                  <th scope="row" colspan="2">
+                    <span class="fw-bold">Tổng cộng</span>
+                  </th>
+                  <td class="text-end">
+                    <span class="fw-bold">${{ calTotal() }}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer d-flex gap-3 align-items-center">
+            <div style="padding: 8px; font-weight: bold">Khuyến mãi</div>
+            <div class="btn-group ms-auto">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Nhập mã khuyến mãi"
+                [(ngModel)]="discountCode"
+              />
+              <button
+                class="btn btn-outline-primary"
+                style="white-space: nowrap"
+                (click)="applyDiscount()"
+              >
+                Áp dụng
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- btn submit  -->
+        <div class="card mt-3">
+          <button
+            type="submit"
+            class="btn btn-primary p-3 fw-bold"
+            (click)="onAddOrderOrPayment()"
+          >
+            <i class="pi pi-check"></i> Hoàn tất
+          </button>
+        </div>
+
+        <div
+          *ngIf="validationErrors && validationErrors.length > 0"
+          class="mx-auto mb-4 bg-danger text-white rounded mt-3"
+        >
+          <ul class="list-unstyled p-3">
+            <li
+              *ngFor="let error of validationErrors; let i = index"
+              class="mb-2"
+            >
+              {{ error }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

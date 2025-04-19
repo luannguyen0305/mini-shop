@@ -1,0 +1,9 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Shop.Domain.Entities
+{
+    public class BaseEntity
+    {
+        public int Id { get; set; }
+    }
+}

@@ -1,0 +1,12 @@
+.search-container {
+  width: 100%;
+}
+
+::ng-deep .p-inputtext {
+  width: 100%;
+  border-radius: 0;
+}
+
+::ng-deep .btn-add button {
+  min-width: 164px;
+}

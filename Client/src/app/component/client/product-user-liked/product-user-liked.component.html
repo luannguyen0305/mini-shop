@@ -1,0 +1,24 @@
+<div class="product-liked-container">
+    <h2>Sản phẩm yêu thích</h2>
+    <div *ngIf="productLiked.length > 0; else noProducts">
+        <div *ngFor="let product of productLiked" class="product-item">
+            <img [src]="product.image?.imgUrl || 'default-image.jpg'" alt="{{ product.name }}" class="product-image" />
+            <div>
+                <h3>{{ product.name }}</h3>
+                <p>Mô tả: {{ product.description }}</p>
+            </div>
+            <select (change)="onSizeColorChange($event, product.id)" [value]="selectedSizeColor[product.id]?.selectedValue || 'Chọn size và color'">
+                <option value="Chọn size và color" disabled>Chọn size và color</option>
+                <option *ngFor="let sizeColor of getSizeColorsForProduct(product.id)" [value]="sizeColor">{{ sizeColor }}</option>
+              </select>
+            <button type="" (click)="addToCart(product)">Thêm vào giỏ hàng</button>
+            <button type="" (click)="DeleteProductLiked(product.id)">Xoá</button>         
+        </div>
+        
+    </div>
+    <ng-template #noProducts>
+      <p>Không có sản phẩm yêu thích nào.</p>
+    </ng-template>
+  </div>
+  
+  

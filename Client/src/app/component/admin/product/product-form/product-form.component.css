@@ -1,0 +1,19 @@
+.font-semibold{
+  font-weight: 600;
+  width: 10%;
+}
+.pInputText{
+width: 90%;
+}
+
+.color-btn {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 8px;
+  padding: 0;
+  border: none;
+}
+.flex {
+  display: flex;
+  align-items: center;
+}

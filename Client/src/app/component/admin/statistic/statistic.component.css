@@ -1,0 +1,224 @@
+/* ===== Tiêu đề ===== */
+h2 {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 20px;
+    color: #2d3e50; /* Màu xanh đậm tinh tế */
+    font-size: 26px; /* Font size lớn hơn */
+    font-weight: 700; /* Đậm hơn */
+    letter-spacing: 1.2px; /* Tăng khoảng cách chữ */
+}
+
+/* ===== Container chính ===== */
+.statistics-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 20px;
+    padding: 20px;
+    background-color: #eef5ff; /* Màu nền xanh nhẹ */
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    height: auto; /* Tự điều chỉnh chiều cao */
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Phần chọn thời gian ===== */
+.timepick {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 35%;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Thẻ doanh thu, số lượng, mua nhiều nhất ===== */
+.revenue, .count, .highestUser {
+    flex: 1;
+    text-align: center;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.revenue:hover, .count:hover, .highestUser:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.revenue h5, .count h5, .highestUser h5 {
+    font-size: 20px;
+    color: #2d3e50;
+    margin: 0;
+    font-weight: 600;
+}
+
+.revenue h5:last-child, .count h5:last-child, .highestUser h5:last-child {
+    font-size: 24px;
+    color: #4b9ce2; /* Màu xanh nổi bật */
+    margin-top: 10px;
+    font-weight: 700;
+}
+
+/* ===== Nút bấm ===== */
+button {
+    background-color: #4b9ce2; /* Xanh dương nổi bật */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #3877b5;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px);
+}
+
+/* ===== Biểu đồ ===== */
+.chart-container {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    overflow: hidden;
+    animation: slideIn 0.6s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+p-chart canvas {
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* ===== Modal Dialog ===== */
+p-dialog {
+    --dialog-header-background-color: #4b9ce2; /* Màu nền tiêu đề */
+    --dialog-header-text-color: white; /* Màu chữ tiêu đề */
+    --dialog-content-padding: 20px;
+    --dialog-border-radius: 12px;
+    --dialog-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    animation: zoomIn 0.4s ease-in-out;
+}
+
+p-dialog .p-dialog-content {
+    background-color: #f7f9fc;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+p-dialog .p-dialog-header .p-dialog-header-icon {
+    color: white;
+    transition: transform 0.2s ease-in-out;
+}
+
+p-dialog .p-dialog-header .p-dialog-header-icon:hover {
+    transform: scale(1.1);
+    color: #d9e3f0;
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ===== Bảng dữ liệu ===== */
+p-table {
+    --table-header-background-color: #eef5ff;
+    --table-header-text-color: #2d3e50;
+    --table-border-color: #d9e3f0;
+}
+
+p-table thead th {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+p-table tbody tr {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+p-table tbody tr:hover {
+    background-color: #f0f8ff;
+    transform: scale(1.02);
+}
+
+/* ===== Dropdown và Calendar ===== */
+p-calendar, p-dropdown {
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #d9e3f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+p-dropdown .p-dropdown-items {
+    background-color: #ffffff;
+    color: #2d3e50;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+p-dropdown .p-dropdown-item:hover {
+    background-color: #eef5ff;
+    color: #4b9ce2;
+}
+
+/* Hiệu ứng focus cho input */
+input, select {
+    border: 1px solid #d9e3f0;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    color: #2d3e50;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, select:focus {
+    border-color: #4b9ce2;
+    box-shadow: 0 0 8px rgba(75, 156, 226, 0.5);
+}
