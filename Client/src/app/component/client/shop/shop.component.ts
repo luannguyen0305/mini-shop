@@ -21,7 +21,8 @@ import { Color } from '../../../_models/color.module';
 import { CategoryService } from '../../../_services/category.service';
 import { CategoryDto } from '../../../_models/category.module';
 import { Router, RouterLink } from '@angular/router';
-
+import { DialogModule } from 'primeng/dialog';
+import { ReviewService } from '../../../_services/review.service';
 @Component({
   selector: 'app-shop',
   standalone: true,
@@ -37,6 +38,7 @@ import { Router, RouterLink } from '@angular/router';
     CommonModule,
     DropdownModule,
     MultiSelectModule,
+    DialogModule
   ],
   templateUrl: './shop.component.html',
   styleUrl: './shop.component.css',
@@ -48,6 +50,7 @@ export class ShopComponent implements OnInit {
   private colorService = inject(ColorService);
   private categoryService = inject(CategoryService);
   private router = inject(Router);
+  private reviewService = inject(ReviewService);
 
   products: ProductDto[] = [];
 
@@ -85,6 +88,7 @@ export class ShopComponent implements OnInit {
     this.getSize();
     this.getColor();
     this.getCategory();
+    
   }
 
   loadListProduct() {
@@ -229,6 +233,7 @@ export class ShopComponent implements OnInit {
     this.searchString = '';
     this.selectedCategory = [];
     this.selectedColor = null;
+
     this.selectedSizes = [];
     this.orderBy = null;
     this.loadListProduct();
@@ -237,4 +242,24 @@ export class ShopComponent implements OnInit {
   goProductDetail(productId: number) {
     this.router.navigate(['/shop/product-detail', productId]);
   }
+  summaryOnlyMode: boolean = false;
+ summaryText: string = '';
+visibleModal: boolean = false;
+
+showSummary(productId: number) {
+  this.summaryOnlyMode = true;
+  this.visibleModal = true;
+
+  this.summaryText = 'Tóm lại, các bình luận về sản phẩm này trái ngược nhau. Một số người cho rằng sản phẩm tốt, trong khi số khác lại không hài lòng, cho rằng chất lượng chưa tốt, vải thô, dễ thấm nước và gây cảm giác khó chịu khi trời nắng';
+
+  this.reviewService.getReviewById(productId).subscribe({
+    next: (response) => {
+      this.summaryText = response.reviewText;
+    }})
+}
+hideModal() {
+  this.visibleModal = false;
+  this.summaryOnlyMode = false;
+  this.summaryText = '';
+}
 }

@@ -69,7 +69,9 @@ export class ReviewService {
       reviewEditDto
     );
   }
-
+  getReviewById(reviewId: number) {
+    return this.http.get<ReviewDto>(this.apiUrl + `${reviewId}/sumary`);
+  }
   addImages(reviewID: number, frmData: FormData) {
     return this.http.post<ReviewDto>(
       `${this.apiUrl}/review/add-images/${reviewID}`,

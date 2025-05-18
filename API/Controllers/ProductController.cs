@@ -98,7 +98,7 @@ namespace api.Controllers
         [HttpPut("revert-quantity/{orderId}")]
         public async Task<IActionResult> RevertQuantityProduct(int orderId)
         {
-            if(orderId < 1)
+            if (orderId < 1)
             {
                 throw new BadRequestException("order id phải lớn hơn 0");
             }
@@ -106,6 +106,7 @@ namespace api.Controllers
             await _productService.RevertQuantityProductAsync(orderId);
             return NoContent();
         }
+
 
     }
 }

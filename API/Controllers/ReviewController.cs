@@ -1,4 +1,6 @@
-﻿using API.Extensions;
+﻿using System.Text;
+using System.Text.Json;
+using API.Extensions;
 using API.Helpers;
 using API.SignalR;
 using Microsoft.AspNetCore.Identity;
@@ -21,16 +23,18 @@ namespace API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IReviewService _reviewService;
+        private readonly IConfiguration _configuration;
 
         public ReviewController(IReviewService reviewService,
             ICloudinaryService cloudinaryService, IHubContext<ReviewHub> hub,
-            UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+            UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IConfiguration configuration)
         {
             _reviewService = reviewService;
             _cloudinaryService = cloudinaryService;
             _hub = hub;
             _userManager = userManager;
             _roleManager = roleManager;
+            _configuration = configuration;
         }
 
         [HttpGet("{productId:int}")]
@@ -42,6 +46,62 @@ namespace API.Controllers
 
             return Ok(pagedList);
         }
+        [HttpGet("{productId:int}/summary")]
+        public async Task<IActionResult> GetReviews(int productId, [FromQuery] ReviewParams prm, [FromQuery] bool summary = false)
+        {
+            var allReviews = await _reviewService.GetAllAsync(productId, prm, false);
+            if (allReviews == null || !allReviews.Any())
+                return NotFound("Không có bình luận nào.");
+
+            if (summary)
+            {
+                // 1. Gộp tất cả reviewText
+                var combinedText = string.Join("\n", allReviews.Select(r => r.ReviewText));
+
+                // 2. Gửi lên Gemini API
+                var apiKey = _configuration["Gemini:ApiKey"];
+                var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={apiKey}";
+
+                var requestBody = new
+                {
+                    contents = new[]
+                    {
+                        new {
+                            parts = new[]
+                            {
+                                new { text = $"Tóm tắt các bình luận sau:\n{combinedText}" }
+                            }
+                        }
+                    }
+                };
+
+                using var httpClient = new HttpClient();
+                var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
+
+                var response = await httpClient.PostAsync(url, content);
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                    return BadRequest($"Lỗi từ Gemini: {response.StatusCode} - {responseString}");
+
+                var json = JsonDocument.Parse(responseString);
+                var summaryText = json.RootElement
+                    .GetProperty("candidates")[0]
+                    .GetProperty("content")
+                    .GetProperty("parts")[0]
+                    .GetProperty("text")
+                    .GetString();
+
+                return Ok(new { productId, summary = summaryText });
+            }
+
+            // Nếu không cần tóm tắt thì trả bình thường
+            var pagedList = await _reviewService.GetAllAsync(productId, prm, false);
+            Response.AddPaginationHeader(pagedList);
+            return Ok(pagedList);
+        }
+
+
 
         [HttpGet("check-permission/{productId}")]
         public async Task<ActionResult<bool>> CheckReviewPermission(int productId)
